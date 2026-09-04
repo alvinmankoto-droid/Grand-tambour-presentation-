@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grand Tambour 3D - Mboyo & Kishi</title>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fff;font-family:system-ui;overflow-x:hidden}
+#canvas{width:100%;height:85vh;display:block}
+#ui{padding:14px;background:#0f0f0f;border-top:1px solid #222}
+.badge{background:#ffb700;color:#000;padding:5px 10px;border-radius:20px;font-weight:900;font-size:10px}
+#dialog{background:#1a1a1a;border-radius:12px;padding:12px;margin-top:8px}
+.btn{background:#ffb700;color:#000;border:0;padding:12px 18px;border-radius:30px;font-weight:900;margin-top:8px}
+.photo-section{padding:20px}
+.photo-card{border-radius:18px;overflow:hidden;margin-top:16px;background:#111;border:1px solid #222}
+.photo-card img{width:100%;display:block}
+.photo-card div{padding:12px}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+<span class="badge">SCÈNE 3D ANIMÉE</span>
+<div id="dialog"><b id="name" style="color:#ffb700">KISHI</b><br><span id="text">Appuie sur Lancer pour voir les 2 enfants parler à Kishi...</span></div>
+<button class="btn" onclick="playConversation()">▶️ LANCER CONVERSATION 3D - Tu as entendu ça?</button>
+</div>
+
+<div class="photo-section">
+<h2 style="font-size:26px">📸 Le Vrai Grand Tambour</h2>
+<p style="opacity:.7;margin-top:6px">Centre Culturel et Artistique pour les pays d'Afrique Centrale - Kinshasa</p>
+
+<div class="photo-card">
+<img src="00ee973f-9a74-61a9-cea8-3c4b044f5a1e.jpg" onerror="this.src='7ac44f58-4b11-216b-5229-31a766fcf8e3.jpg'">
+<div><b>Vue Face - Forme Tambour Sacré</b><br><span style="opacity:.6">Bâtiment circulaire doré 38 000 m²</span></div>
+</div>
+
+<div class="photo-card">
+<img src="7ac44f58-4b11-216b-5229-31a766fcf8e3.jpg" onerror="this.src='00ee973f-9a74-61a9-cea8-3c4b044f5a1e.jpg'">
+<div><b>Vue Aérienne</b><br><span style="opacity:.6">Près du fleuve Congo</span></div>
+</div>
+
+<div class="photo-card">
+<img src="a2c54784-aeb7-9fa0-287d-cbd9265b3a0e.jpg" onerror="this.src='7ac44f58-4b11-216b-5229-31a766fcf8e3.jpg'">
+<div><b>Hall Sacré Intérieur</b><br><span style="opacity:.6">Piliers dorés avec motifs africains</span></div>
+</div>
+
+<div style="margin-top:20px;padding:12px;background:#111;border-radius:12px;border-left:4px solid #ffb700">
+<b>🎤 MBOYO BOKETSHU</b><br>
+<span id="mboyo" style="font-size:14px;line-height:1.4">Bienvenue au Grand Tambour, la fabrique des idées pour le Congo, Cameroun, Gabon, Angola et toute l'Afrique Centrale</span><br>
+<button class="btn" style="background:#fff;margin-top:10px" onclick="speakM()">▶️ Écouter Mboyo</button>
+</div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+const canvas=document.getElementById('canvas');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0a0600);scene.fog=new THREE.Fog(0x0a0600,8,20);
+const camera=new THREE.PerspectiveCamera(55,canvas.clientWidth/canvas.clientHeight,0.1,100);
+camera.position.set(0,1.6,4.5);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setSize(canvas.clientWidth,canvas.clientHeight);renderer.setPixelRatio(devicePixelRatio);
+const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,1.2,0);controls.enableDamping=true;
+scene.add(new THREE.AmbientLight(0xffe9b0,0.7));
+const sun=new THREE.DirectionalLight(0xfff2cc,1.2);sun.position.set(5,8,3);scene.add(sun);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshStandardMaterial({color:0xe8dcc0}));floor.rotation.x=-Math.PI/2;scene.add(floor);
+for(let i=-2;i<=2;i++){const p=new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.26,4.5,12),new THREE.MeshStandardMaterial({color:0xc9a24a}));p.position.set(i*2.5,2.2,-2);scene.add(p);}
+const kishiGroup=new THREE.Group();kishiGroup.position.set(0,2.2,-1.2);
+const mask=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.45,0.7,12),new THREE.MeshStandardMaterial({color:0xffd700,emissive:0xffa500,emissiveIntensity:0.6}));kishiGroup.add(mask);
+const halo=new THREE.Mesh(new THREE.TorusGeometry(0.7,0.05,8,24),new THREE.MeshStandardMaterial({color:0xffb700,emissive:0xffb700,emissiveIntensity:1}));halo.rotation.x=Math.PI/2;kishiGroup.add(halo);
+const lightK=new THREE.PointLight(0xffb700,2.5,7);kishiGroup.add(lightK);scene.add(kishiGroup);
+function makeKid(x,c,isGirl){const g=new THREE.Group();g.position.set(x,0,0.6);const b=new THREE.Mesh(new THREE.CapsuleGeometry(0.22,0.5,4,8),new THREE.MeshStandardMaterial({color:c}));b.position.y=0.75;g.add(b);const h=new THREE.Mesh(new THREE.SphereGeometry(0.26,12,12),new THREE.MeshStandardMaterial({color:0x6b4a32}));h.position.y=1.3;g.add(h);return g;}
+const boy=makeKid(-0.85,0x2a8cff,false);const girl=makeKid(0.85,0xff5a8a,true);scene.add(boy);scene.add(girl);
+const dialogues=[
+{who:'KISHI',text:'tas entendu ça' 'bonjour les Enfants... Bienvenue dans le Grand Tambour(centre culturel et artistique pour le pays dafrique . Je suis Kishi, gardien depuis la nuit des temps.'},
+{who:'boketshu',text:'Wouah! C est toi le grand masque qui brille? Tu es magique!'},
+{who:'mboyo',text:'Bonjour Kishi! C est ici la fabrique des idées de l Afrique Centrale?'},
+{who:'KISHI',text:'Oui... Ici résonnent les voix de vos ancêtres. Congo, Cameroun, Gabon, Angola... Tous unis.'},
+{who:'Garçon',text:'Tu as entendu ça? Le tambour qui bat!'},
+{who:'KISHI',text:'Tu as entendu ça? C est le coeur de l Afrique qui parle! N oubliez jamais ce son.'},
+];
+let idx=0;let speaking=false;
+const nameEl=document.getElementById('name');const textEl=document.getElementById('text');
+function speakCurrent(){const d=dialogues[idx];nameEl.textContent=d.who;textEl.textContent=d.text;const u=new SpeechSynthesisUtterance(d.text);u.lang='fr-FR';u.rate=0.9;if(d.who==='KISHI'){u.pitch=0.4;u.rate=0.8;kishiGroup.scale.set(1.4,1.4,1.4);}else{kishiGroup.scale.set(1,1,1);}u.onend=()=>{idx=(idx+1)%dialogues.length;if(speaking&&idx!=0)setTimeout(speakCurrent,500);else if(idx==0){speaking=false;document.querySelector('.btn').innerText='▶️ REJOUER CONVERSATION';}};speechSynthesis.speak(u);}
+window.playConversation=()=>{speaking=true;idx=0;speakCurrent();document.querySelector('.btn').innerText='⏸️ Conversation en cours...';}
+window.speakM=()=>{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(document.getElementById('mboyo').innerText);u.lang='fr-FR';speechSynthesis.speak(u);}
+function animate(t){requestAnimationFrame(animate);const time=t*0.001;kishiGroup.position.y=2.2+Math.sin(time*1.2)*0.12;kishiGroup.rotation.y=Math.sin(time*0.4)*0.2;halo.rotation.z=time;controls.update();renderer.render(scene,camera);}animate(0);
+addEventListener('resize',()=>{camera.aspect=canvas.clientWidth/canvas.clientHeight;camera.updateProjectionMatrix();renderer.setSize(canvas.clientWidth,canvas.clientHeight);});
+</script>
+</body>
+</html>
