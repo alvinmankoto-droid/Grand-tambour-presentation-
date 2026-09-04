@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width">
+<title>Grand Tambour - Kishi</title>
+<style>
+body{margin:0;background:#0a0a0a;color:white;font-family:system-ui;text-align:center}
+.hero{min-height:100vh;padding:20px;background:radial-gradient(circle at 50% 0%,#ff8c00,#0a0a0a 70%)}
+h1{font-size:2.5em}h1 span{color:#ff8c00}
+.scene{display:flex;gap:15px;justify-content:center;margin:25px 0;flex-wrap:wrap}
+.card{background:rgba(255,255,255,0.08);border:1px solid #ff8c00;border-radius:20px;padding:15px;width:150px}
+.kishi{width:180px;border:2px solid #ff8c00}
+.audio{max-width:400px;margin:20px auto;background:#1a1a1a;padding:15px;border-radius:15px;border-left:4px solid #ff8c00}
+.btn{background:#ff8c00;color:#000;border:none;padding:10px 20px;border-radius:30px;font-weight:bold}
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:15px;max-width:800px;margin:auto}
+.gallery img{width:100%;height:200px;object-fit:cover;border-radius:12px}
+.full{grid-column:span 2;height:320px}
+</style></head><body>
+<div class="hero">
+<h1><span>Grand</span> Tambour</h1>
+<p>Mboyo Boketshu Kishi - Présentation 3D</p>
+<div class="scene">
+<div class="card">👧🏾<br><b>Enfant 1</b><br>Gardienne du rythme</div>
+<div class="card kishi">🥁<br><b>KISHI</b><br>Le Grand Tambour qui parle</div>
+<div class="card">👦🏾<br><b>Enfant 2</b><br>Messager de la tradition</div>
+</div>
+<div class="audio">
+<p id="txt">"Je suis le Grand Tambour Mboyo... Je résonne pour unir le peuple..."</p>
+<button class="btn" onclick="parler()">▶️ Faire parler Kishi</button>
+</div>
+</div>
+<div class="gallery">
+<img src="00ee973f-9a74-61a9-cea8-3c4b042ced4c_ACF19AE0-5EEE-44E0-83AB-C5D8C2285FB3.jpeg" class="full">
+<img src="7ac44f58-4b11-2168-9f71-e0ac5b3ec5b4_7ac44f58-4b11-2168-9f71-e0ac5b3ec5b4.jpeg">
+<img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400">
+</div>
+<script>
+function parler(){
+let t="Je suis le Grand Tambour Mboyo Boketshu Kishi. Je résonne depuis Djugu pour porter la voix de nos ancêtres.";
+document.getElementById('txt').innerText=t;
+let u=new SpeechSynthesisUtterance(t);u.lang='fr-FR';speechSynthesis.speak(u);
+}
+</script>
+</body></html>
